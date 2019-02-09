@@ -109,17 +109,8 @@ class Veri_Ogren:
             test_image = image.load_img(path+"/"+file,color_mode="grayscale",target_size=(28,28))
             test_image = image.img_to_array(test_image)
             test_image = np.expand_dims(test_image,axis=0)
-
-            #plt.imshow(test_image.reshape(28, 28), cmap='gray', interpolation='none')
-
-            #test_image = test_image.reshape(784)
-
-            new_array = list()
-            for a in test_image[0]:
-                for b in a:
-                    new_array.append(b[0])
-
-            image_array.append(new_array)
+            test_image = test_image.reshape(784)
+            image_array.append(test_image)
 
         image_array = np.array(image_array)
 
@@ -147,17 +138,29 @@ class Veri_Ogren:
         if not os.path.isfile(path):
             print("I not find this path")
             return None
+        image_array = list()
 
         test_image = image.load_img(path, color_mode="grayscale", target_size=(28, 28))
         test_image = image.img_to_array(test_image)
         test_image = np.expand_dims(test_image, axis=0)
-        new_array = list()
-        for a in test_image[0]:
-            for b in a:
-                new_array.append(b[0])
-        image_array = np.array([new_array])
+        test_image = test_image.reshape(1,784)
 
-        result = self.model.predict_classes(image_array, verbose=1)
+        result = self.model.predict_classes(np.array(test_image), verbose=1)
+
+        # adapt figure size to accomodate 18 subplots
+        plt.rcParams['figure.figsize'] = (7, 14)
+
+        figure_evaluation = plt.figure()
+
+        plt.subplot(6, 3, 1)
+        plt.imshow(test_image.reshape(28, 28), cmap='gray', interpolation='none')
+        plt.title(
+           "Predicted: {}".format(result))
+        plt.xticks([])
+        plt.yticks([])
+        plt.show()
+
+        figure_evaluation
 
         return result
 
